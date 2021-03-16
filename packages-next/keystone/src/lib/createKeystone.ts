@@ -50,7 +50,10 @@ export function createKeystone(
   Object.entries(lists).forEach(([key, { fields, graphql, access, hooks, description, db }]) => {
     keystone.createList(key, {
       fields: Object.fromEntries(
-        Object.entries(fields).map(([key, { type, config }]: any) => [key, { type, ...config }])
+        Object.entries(fields).map(([key, { type, config }]: any) => [
+          key,
+          { type, cacheHint: config.graphql?.cacheHint, ...config },
+        ])
       ),
       access,
       queryLimits: graphql?.queryLimits,
@@ -59,6 +62,7 @@ export function createKeystone(
       itemQueryName: graphql?.itemQueryName,
       hooks,
       adapterConfig: db,
+      cacheHint: graphql?.cacheHint,
       // FIXME: Unsupported options: Need to work which of these we want to support with backwards
       // compatibility options.
       // adminDoc
@@ -69,7 +73,6 @@ export function createKeystone(
       // singular
       // plural
       // path
-      // cacheHint
       // plugins
     });
   });
