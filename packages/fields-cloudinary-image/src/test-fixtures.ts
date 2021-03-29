@@ -1,12 +1,8 @@
 import path from 'path';
-
-require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
-
 import fs from 'fs';
 import mime from 'mime';
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
 
 import { AdapterName } from '@keystone-next/test-utils-legacy';
 import { cloudinaryImage } from '@keystone-next/cloudinary';
@@ -30,12 +26,12 @@ const prepareFile = (_filePath: string) => {
   return upload;
 };
 
-const cloudinaryAdapter = new CloudinaryAdapter({
+const cloudinaryConfig = {
   cloudName: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
   apiKey: process.env.CLOUDINARY_KEY || 'cloudinary_key',
   apiSecret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
   folder: 'cloudinary-test',
-});
+};
 
 // Configurations
 export const name = 'CloudinaryImage';
@@ -52,10 +48,10 @@ export const exampleValue2 = () => prepareFile('keystone.jpeg');
 export const createReturnedValue = exampleValue().file.filename;
 export const updateReturnedValue = exampleValue2().file.filename;
 
-export const fieldConfig = () => ({ adapter: cloudinaryAdapter });
+export const fieldConfig = () => ({ cloudinary: cloudinaryConfig });
 export const getTestFields = () => ({
   name: text(),
-  image: cloudinaryImage({ adapter: cloudinaryAdapter }),
+  image: cloudinaryImage({ cloudinary: cloudinaryConfig }),
 });
 
 export const initItems = () => [
