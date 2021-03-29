@@ -50,9 +50,9 @@ export class CloudinaryAdapter {
       public_id: id,
       folder: this.folder,
       // Auth
-      api_key: this.apiKey,
-      api_secret: this.apiSecret,
-      cloud_name: this.cloudName,
+      // api_key: this.apiKey,
+      // api_secret: this.apiSecret,
+      // cloud_name: this.cloudName,
     }).then(result => ({
       // Return the relevant data for the File api
       id,
