@@ -67,20 +67,27 @@ export class CloudinaryAdapter {
    * @param options Delete options passed to cloudinary.
    *                For available options refer to the [Cloudinary destroy API](https://cloudinary.com/documentation/image_upload_api_reference#destroy_method).
    */
-  delete(file: { _meta: MetaType }, options = {}) {
-    const destroyOptions = {
-      // Auth
-      api_key: this.apiKey,
-      api_secret: this.apiSecret,
-      cloud_name: this.cloudName,
-      ...options,
-    };
+  delete(
+    file: { _meta: MetaType },
+    options: {
+      resource_type?: string | undefined;
+      type?: string | undefined;
+      invalidate?: boolean | undefined;
+    } = {}
+  ) {
+    // const destroyOptions = {
+    //   // Auth
+    //   api_key: this.apiKey,
+    //   api_secret: this.apiSecret,
+    //   cloud_name: this.cloudName,
+    //   ...options,
+    // };
 
     return new Promise((resolve, reject) => {
       if (file) {
         // FIXME: Something is amiss here, we shouldn't have to ts-ignore this. -TL
         // @ts-ignore
-        cloudinary.v2.uploader.destroy(file._meta.public_id, destroyOptions, (error, result) => {
+        cloudinary.v2.uploader.destroy(file._meta.public_id, options, (error, result) => {
           if (error) {
             reject(error);
           } else {
@@ -119,7 +126,7 @@ export class CloudinaryAdapter {
       secure: true,
       url_suffix: prettyName,
       transformation,
-      cloud_name: this.cloudName,
+      // cloud_name: this.cloudName,
     });
   }
 }
