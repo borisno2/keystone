@@ -1,14 +1,16 @@
+import path from 'path';
+
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 
 import fs from 'fs';
 import mime from 'mime';
 import { Upload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
-import { Text } from '@keystone-next/fields-legacy';
 import { CloudinaryAdapter } from '@keystone-next/file-adapters-legacy';
 
-import { CloudinaryImage } from './';
-const path = require('path');
+import { AdapterName } from '@keystone-next/test-utils-legacy';
+import { cloudinaryImage } from '@keystone-next/cloudinary';
+import { text } from '@keystone-next/fields';
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'cloudinary_cloud_name',
@@ -16,7 +18,7 @@ cloudinary.v2.config({
   api_secret: process.env.CLOUDINARY_SECRET || 'cloudinary_secret',
 });
 
-const prepareFile = _filePath => {
+const prepareFile = (_filePath: string) => {
   const filePath = path.resolve(`packages/fields-cloudinary-image/src/test-files/${_filePath}`);
   const upload = new Upload();
   upload.resolve({
@@ -37,7 +39,7 @@ const cloudinaryAdapter = new CloudinaryAdapter({
 
 // Configurations
 export const name = 'CloudinaryImage';
-export const type = CloudinaryImage;
+export const typeFunction = cloudinaryImage;
 export const supportsUnique = false;
 export const fieldName = 'image';
 export const subfieldName = 'originalFilename';
@@ -52,8 +54,8 @@ export const updateReturnedValue = exampleValue2().file.filename;
 
 export const fieldConfig = () => ({ adapter: cloudinaryAdapter });
 export const getTestFields = () => ({
-  name: { type: Text },
-  image: { type, adapter: cloudinaryAdapter },
+  name: text(),
+  image: cloudinaryImage({ adapter: cloudinaryAdapter }),
 });
 
 export const initItems = () => [
@@ -76,7 +78,7 @@ export const storedValues = () => [
   { image: null, name: 'file6' },
 ];
 
-export const supportedFilters = adapterName => [
+export const supportedFilters = (adapterName: AdapterName) => [
   'null_equality',
   !['prisma_postgresql', 'prisma_sqlite'].includes(adapterName) && 'in_empty_null',
 ];
