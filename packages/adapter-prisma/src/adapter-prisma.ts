@@ -8,10 +8,30 @@ import {
   devMigrations,
   deployMigrations,
   resetDatabaseWithMigrations,
-  // eslint-disable-next-line import/no-unresolved
 } from './migrations';
 
+type Rels = any[];
+
 class PrismaAdapter {
+  config?: {
+    prismaClient?: any;
+    provider?: 'postgresql' | 'sqlite';
+    migrationMode?: 'prototype';
+    enableLogging?: boolean;
+    url?: string;
+  };
+  listAdapters: {};
+  listAdapterClass?: any;
+  _prismaClient?: any;
+  name: 'prisma';
+  provider: 'postgresql' | 'sqlite';
+  migrationMode: 'prototype';
+
+  enableLogging: boolean;
+  url?: string;
+
+  schemaPath?: string;
+  clientPath?: string;
   constructor(config = {}) {
     this.config = { ...config };
     this.listAdapters = {};
@@ -29,16 +49,16 @@ class PrismaAdapter {
     this.url = this.config.url || process.env.DATABASE_URL;
   }
 
-  newListAdapter(key, adapterConfig) {
+  newListAdapter(key: string, adapterConfig) {
     this.listAdapters[key] = new this.listAdapterClass(key, this, adapterConfig);
     return this.listAdapters[key];
   }
 
-  getListAdapterByKey(key) {
+  getListAdapterByKey(key: string) {
     return this.listAdapters[key];
   }
 
-  async connect({ rels }) {
+  async connect({ rels }: { rels: Rels }) {
     // Connect to the database
     await this._connect({ rels }, this.config);
 
@@ -71,7 +91,7 @@ class PrismaAdapter {
     }
   }
 
-  async _prepareSchema(rels) {
+  async _prepareSchema(rels: Rels) {
     const clientDir = 'generated-client';
     const prismaSchema = await this._generatePrismaSchema({ rels, clientDir });
     // See if there is a prisma client available for this hash
@@ -95,13 +115,13 @@ class PrismaAdapter {
     }
   }
 
-  async deploy(rels) {
+  async deploy(rels: Rels) {
     // Apply any migrations which haven't already been applied
     await this._prepareSchema(rels);
     await deployMigrations(this._url(), path.resolve(this.schemaPath));
   }
 
-  async _getPrismaClient({ rels }) {
+  async _getPrismaClient({ rels }: { rels: Rels }) {
     if (this._prismaClient) {
       return this._prismaClient;
     }
@@ -109,7 +129,7 @@ class PrismaAdapter {
     return require(this.clientPath).PrismaClient;
   }
 
-  async _connect({ rels }) {
+  async _connect({ rels }: { rels: Rels }) {
     // the adapter was already connected since we have a prisma client
     // it may have been disconnected since it was connected though
     // so connect but don't regenerate the prisma client
@@ -125,7 +145,7 @@ class PrismaAdapter {
     await this.prisma.$connect();
   }
 
-  async _generateClient(rels) {
+  async _generateClient(rels: Rels) {
     // Generate a formatted schema
     // note that we currently still need to call _prepareSchema even during
     // a `keystone-next start` because it has various side effects
@@ -169,7 +189,7 @@ class PrismaAdapter {
     generator.stop();
   }
 
-  async _generatePrismaSchema({ rels, clientDir }) {
+  async _generatePrismaSchema({ rels, clientDir }: { rels: Rels }) {
     const models = Object.values(this.listAdapters).map(listAdapter => {
       const scalarFields = flatten(
         listAdapter.fieldAdapters.filter(f => !f.field.isRelationship).map(f => f.getPrismaSchema())
@@ -335,7 +355,8 @@ class PrismaAdapter {
 }
 
 class PrismaListAdapter {
-  constructor(key, parentAdapter, config) {
+  key: string;
+  constructor(key: string, parentAdapter, config) {
     this.key = key;
     this.parentAdapter = parentAdapter;
     this.fieldAdapters = [];
@@ -664,7 +685,11 @@ class PrismaListAdapter {
 }
 
 class PrismaFieldAdapter {
-  constructor(fieldName, path, field, listAdapter, getListByKey, config = {}) {
+  fieldName: string;
+  path: string;
+
+  dbPath: string;
+  constructor(fieldName: string, path: string, field, listAdapter, getListByKey, config = {}) {
     this.fieldName = fieldName;
     this.path = path;
     this.field = field;
@@ -696,7 +721,7 @@ class PrismaFieldAdapter {
   //   `dbPath`: The database field/column name to be used in the comparison
   //   `f`: (non-string methods only) A value transformation function which converts from a string type
   //        provided by graphQL into a native adapter type.
-  equalityConditions(dbPath, f = identity) {
+  equalityConditions(dbPath: string, f = identity) {
     return {
       [this.path]: value => ({ [dbPath]: { equals: f(value) } }),
       [`${this.path}_not`]: value =>
@@ -708,7 +733,7 @@ class PrismaFieldAdapter {
     };
   }
 
-  equalityConditionsInsensitive(dbPath, f = identity) {
+  equalityConditionsInsensitive(dbPath: string, f = identity) {
     return {
       [`${this.path}_i`]: value => ({ [dbPath]: { equals: f(value), mode: 'insensitive' } }),
       [`${this.path}_not_i`]: value =>
@@ -723,7 +748,7 @@ class PrismaFieldAdapter {
     };
   }
 
-  inConditions(dbPath, f = identity) {
+  inConditions(dbPath: string, f = identity) {
     return {
       [`${this.path}_in`]: value =>
         value.includes(null)
@@ -743,7 +768,7 @@ class PrismaFieldAdapter {
     };
   }
 
-  orderingConditions(dbPath, f = identity) {
+  orderingConditions(dbPath: string, f = identity) {
     return {
       [`${this.path}_lt`]: value => ({ [dbPath]: { lt: f(value) } }),
       [`${this.path}_lte`]: value => ({ [dbPath]: { lte: f(value) } }),
@@ -752,47 +777,47 @@ class PrismaFieldAdapter {
     };
   }
 
-  stringConditions(dbPath, f = identity) {
+  stringConditions(dbPath: string, f = identity) {
     return {
-      [`${this.path}_contains`]: value => ({ [dbPath]: { contains: f(value) } }),
-      [`${this.path}_not_contains`]: value => ({
+      [`${this.path}_contains`]: (value: string) => ({ [dbPath]: { contains: f(value) } }),
+      [`${this.path}_not_contains`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { contains: f(value) } } }, { [dbPath]: null }],
       }),
-      [`${this.path}_starts_with`]: value => ({ [dbPath]: { startsWith: f(value) } }),
-      [`${this.path}_not_starts_with`]: value => ({
+      [`${this.path}_starts_with`]: (value: string) => ({ [dbPath]: { startsWith: f(value) } }),
+      [`${this.path}_not_starts_with`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { startsWith: f(value) } } }, { [dbPath]: null }],
       }),
-      [`${this.path}_ends_with`]: value => ({ [dbPath]: { endsWith: f(value) } }),
-      [`${this.path}_not_ends_with`]: value => ({
+      [`${this.path}_ends_with`]: (value: string) => ({ [dbPath]: { endsWith: f(value) } }),
+      [`${this.path}_not_ends_with`]: (value: string) => ({
         OR: [{ NOT: { [dbPath]: { endsWith: f(value) } } }, { [dbPath]: null }],
       }),
     };
   }
 
-  stringConditionsInsensitive(dbPath, f = identity) {
+  stringConditionsInsensitive(dbPath: string, f = identity) {
     return {
-      [`${this.path}_contains_i`]: value => ({
+      [`${this.path}_contains_i`]: (value: string) => ({
         [dbPath]: { contains: f(value), mode: 'insensitive' },
       }),
-      [`${this.path}_not_contains_i`]: value => ({
+      [`${this.path}_not_contains_i`]: (value: string) => ({
         OR: [
           { NOT: { [dbPath]: { contains: f(value), mode: 'insensitive' } } },
           { [dbPath]: null },
         ],
       }),
-      [`${this.path}_starts_with_i`]: value => ({
+      [`${this.path}_starts_with_i`]: (value: string) => ({
         [dbPath]: { startsWith: f(value), mode: 'insensitive' },
       }),
-      [`${this.path}_not_starts_with_i`]: value => ({
+      [`${this.path}_not_starts_with_i`]: (value: string) => ({
         OR: [
           { NOT: { [dbPath]: { startsWith: f(value), mode: 'insensitive' } } },
           { [dbPath]: null },
         ],
       }),
-      [`${this.path}_ends_with_i`]: value => ({
+      [`${this.path}_ends_with_i`]: (value: string) => ({
         [dbPath]: { endsWith: f(value), mode: 'insensitive' },
       }),
-      [`${this.path}_not_ends_with_i`]: value => ({
+      [`${this.path}_not_ends_with_i`]: (value: string) => ({
         OR: [
           { NOT: { [dbPath]: { endsWith: f(value), mode: 'insensitive' } } },
           { [dbPath]: null },
