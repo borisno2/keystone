@@ -1,5 +1,11 @@
 # @keystonejs/keystone
 
+## 23.0.0
+
+### Major Changes
+
+- [#5281](https://github.com/keystonejs/keystone/pull/5281) [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter` exports.
+
 ## 22.0.0
 
 ### Major Changes

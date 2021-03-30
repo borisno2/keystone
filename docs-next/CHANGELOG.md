@@ -1,5 +1,12 @@
 # @keystone-next/website
 
+## 1.2.1
+
+### Patch Changes
+
+- Updated dependencies [[`4fa66ac1f`](https://github.com/keystonejs/keystone/commit/4fa66ac1fc6fd0a43da17dd90797733e8c958785)]:
+  - @keystone-next/fields-document@4.0.0
+
 ## 1.2.0
 
 ### Minor Changes

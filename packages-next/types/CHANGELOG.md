@@ -1,5 +1,13 @@
 # @keystone-next/types
 
+## 16.0.0
+
+### Major Changes
+
+- [#5266](https://github.com/keystonejs/keystone/pull/5266) [`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Removed the `none` case in `MigrationAction` and require that the PrismaClient is passed to be able to connect to the database for the `none-skip-client-generation` case.
+
+* [#5256](https://github.com/keystonejs/keystone/pull/5256) [`399e6db39`](https://github.com/keystonejs/keystone/commit/399e6db39c51cf9e8bbf3dde0887e5bf55dd1c4d) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for the `knex` and `mongoose` database adapters. We now only support `prisma_postgresql` and `prisma_sqlite`.
+
 ## 15.0.1
 
 ### Patch Changes

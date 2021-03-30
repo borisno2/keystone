@@ -1,5 +1,21 @@
 # @keystonejs/fields
 
+## 25.0.0
+
+### Major Changes
+
+- [#5275](https://github.com/keystonejs/keystone/pull/5275) [`8665cfe66`](https://github.com/keystonejs/keystone/commit/8665cfe66016e0356681413e31f80a6d5586d364) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `mongoId` field type.
+
+* [#5273](https://github.com/keystonejs/keystone/pull/5273) [`4fa66ac1f`](https://github.com/keystonejs/keystone/commit/4fa66ac1fc6fd0a43da17dd90797733e8c958785) Thanks [@timleslie](https://github.com/timleslie)! - Removed support for the `knex` and `mongoose` field adapters.
+
+### Patch Changes
+
+- [#5280](https://github.com/keystonejs/keystone/pull/5280) [`9e450d6b3`](https://github.com/keystonejs/keystone/commit/9e450d6b326e2ba5f46e49ecf53b6bd7a627e9ca) Thanks [@timleslie](https://github.com/timleslie)! - Removed the `adapters-mongoose-legacy` packages dependency.
+
+- Updated dependencies [[`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6), [`399e6db39`](https://github.com/keystonejs/keystone/commit/399e6db39c51cf9e8bbf3dde0887e5bf55dd1c4d), [`8665cfe66`](https://github.com/keystonejs/keystone/commit/8665cfe66016e0356681413e31f80a6d5586d364), [`399e6db39`](https://github.com/keystonejs/keystone/commit/399e6db39c51cf9e8bbf3dde0887e5bf55dd1c4d), [`9e450d6b3`](https://github.com/keystonejs/keystone/commit/9e450d6b326e2ba5f46e49ecf53b6bd7a627e9ca), [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3)]:
+  - @keystone-next/adapter-prisma-legacy@4.1.0
+  - @keystone-next/fields@6.0.0
+
 ## 24.0.0
 
 ### Major Changes

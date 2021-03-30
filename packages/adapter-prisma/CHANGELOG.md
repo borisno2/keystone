@@ -1,5 +1,19 @@
 # @keystonejs/adapter-prisma
 
+## 4.1.0
+
+### Minor Changes
+
+- [#5266](https://github.com/keystonejs/keystone/pull/5266) [`c28e765d1`](https://github.com/keystonejs/keystone/commit/c28e765d12655f802e324b82529fcf571d88c0c6) Thanks [@mitchellhamilton](https://github.com/mitchellhamilton)! - Added `devMigrations` and `runPrototypeMigrations` exports.
+
+### Patch Changes
+
+- [#5281](https://github.com/keystonejs/keystone/pull/5281) [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3) Thanks [@timleslie](https://github.com/timleslie)! - Removed the legacy `BaseKeystoneAdapter`, `BaseListAdapter`, and `BaseFieldAdapter` exports.
+
+- Updated dependencies [[`4fa66ac1f`](https://github.com/keystonejs/keystone/commit/4fa66ac1fc6fd0a43da17dd90797733e8c958785), [`4f0abec0b`](https://github.com/keystonejs/keystone/commit/4f0abec0b19c3495c1ae6d7dac49fb46253cf7b3)]:
+  - @keystone-next/fields-auto-increment-legacy@10.0.0
+  - @keystone-next/keystone-legacy@23.0.0
+
 ## 4.0.1
 
 ### Patch Changes
